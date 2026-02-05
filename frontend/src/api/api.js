@@ -13,7 +13,7 @@ const api = {
   },
   
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/register_user`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -23,7 +23,7 @@ const api = {
   },
   
   getProfile: async (token) => {
-    const response = await fetch(`${API_URL}/profile`, {
+    const response = await fetch(`${API_URL}/user/get_profile`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -31,7 +31,7 @@ const api = {
   },
   
   updateProfile: async (token, profileData) => {
-    const response = await fetch(`${API_URL}/profile`, {
+    const response = await fetch(`${API_URL}/user/update_user`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const api = {
   },
   
   getUserCount: async (token) => {
-    const response = await fetch(`${API_URL}/users/count`, {
+    const response = await fetch(`${API_URL}/user/get_user_count`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -52,7 +52,7 @@ const api = {
   },
   
   getUsersList: async (token) => {
-    const response = await fetch(`${API_URL}/users`, {
+    const response = await fetch(`${API_URL}/user/user_list`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();

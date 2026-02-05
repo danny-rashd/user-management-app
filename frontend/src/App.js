@@ -93,9 +93,9 @@ function Login() {
     try {
       const result = await api.login(formData);
       
-      if (result.token) {
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
+      if (result.code == 111) {
+        localStorage.setItem('token', result.data.uuid);
+        localStorage.setItem('user', JSON.stringify(result.data));
         navigate('/dashboard');
       } else {
         setMessage(result.message || 'Login failed');
@@ -158,8 +158,8 @@ function Dashboard() {
         // Fetch user count
         const result = await api.getUserCount(token);
         
-        if (result.count !== undefined) {
-          setUserCount(result.count);
+        if (result.code == 111) {
+          setUserCount(result.data);
         } else {
           setError('Could not fetch user count');
         }

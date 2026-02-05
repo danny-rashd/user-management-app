@@ -140,6 +140,7 @@ function Dashboard() {
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedDeleteUUID, setSelectedDeleteUUID] = useState("");
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -218,78 +219,131 @@ function Dashboard() {
 
 
   return (
-    <div className="dashboard-container">
-      <div style={{display:"flex", marginBottom: "40px", justifyContent:"space-between"}}>
-        <div></div>
-        <h2 style={{marginBottom: "0"}}>Dashboard</h2>
+      <>
+        <DeleteConfirmModal
+            open={selectedDeleteUUID.length > 0}
+            onCancel={() => setSelectedDeleteUUID('')}
+            onConfirm={() => {
+              handleDelete(selectedDeleteUUID);
+              setSelectedDeleteUUID('');
+            }}
+        />
+        <div className="dashboard-container">
+          <div style={{display:"flex", marginBottom: "40px", justifyContent:"space-between"}}>
+            <div></div>
+            <h2 style={{marginBottom: "0"}}>Dashboard</h2>
 
-        <button onClick={handleLogout} className="btn logout">Logout</button>
-      </div>
-      {user ? (
-        <>
-          <div className="user-info">
-            <p><strong>Welcome, {user.name}!</strong></p>
-            {user.rank && <p>Rank: {user.rank}</p>}
-            {user.role && <p>Role: {user.role}</p>}
+            <button onClick={handleLogout} className="btn logout">Logout</button>
           </div>
-          
-          <div className="user-count-card">
-            <h3>Total Registered Users</h3>
-            <p className="count">{userCount}</p>
-          </div>
+          {user ? (
+              <>
+                <div className="user-info">
+                  <p><strong>Welcome, {user.name}!</strong></p>
+                  {user.rank && <p>Rank: {user.rank}</p>}
+                  {user.role && <p>Role: {user.role}</p>}
+                </div>
 
-          <div className="users-list">
-            <h3>Registered Users</h3>
-            {usersList.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Full Name</th>
-                    <th>Rank</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersList.map((u) => (
-                    <tr key={u.uuuuid}>
-                      <td>{u.name || '-'}</td>
-                      <td>{u.rank || '-'}</td>
-                      <td>{u.role || '-'}</td>
-                      <td>{new Date(u.date_created).toLocaleDateString()}</td>
-                      <td style={{ display: 'flex', gap: '10px' }}>
-                        <button onClick={() => handleDelete(u.uuid)} className="btn logout">Delete</button>
+                <div className="user-count-card">
+                  <h3>Total Registered Users</h3>
+                  <p className="count">{userCount}</p>
+                </div>
 
-                        <Link to={'/profile?id=' + u.uuid} className="btn">
-                          Edit
-                        </Link>
+                <div className="users-list">
+                  <h3>Registered Users</h3>
+                  {usersList.length > 0 ? (
+                      <table>
+                        <thead>
+                        <tr>
+                          <th>Full Name</th>
+                          <th>Rank</th>
+                          <th>Role</th>
+                          <th>Joined</th>
+                          <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {usersList.map((u) => (
+                            <tr key={u.uuuuid}>
+                              <td>{u.name || '-'}</td>
+                              <td>{u.rank || '-'}</td>
+                              <td>{u.role || '-'}</td>
+                              <td>{new Date(u.date_created).toLocaleDateString()}</td>
+                              <td style={{ display: 'flex', gap: '10px' }}>
+                                <button onClick={() => setSelectedDeleteUUID(u.uuid)} className="btn logout">Delete</button>
 
-                      </td>  
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : usersList.length === 0 ?(
-              <p>No users found</p>
-            ) : loading ? (
-              <p>Loading users...</p>
-            ) : (
-              <p>Error loading users</p>
-            )}
-          </div>
+                                <Link to={'/profile?id=' + u.uuid} className="btn">
+                                  Edit
+                                </Link>
 
-          {/*<div className="actions">*/}
-          {/*  <Link to="/profile" className="btn">Update Profile</Link>*/}
-          {/*  <button onClick={handleLogout} className="btn logout">Logout</button>*/}
-          {/*</div>*/}
-        </>
-      ) : (
-        <p>No user data found</p>
-      )}
-    </div>
+                              </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                      </table>
+                  ) : usersList.length === 0 ?(
+                      <p>No users found</p>
+                  ) : loading ? (
+                      <p>Loading users...</p>
+                  ) : (
+                      <p>Error loading users</p>
+                  )}
+                </div>
+
+                {/*<div className="actions">*/}
+                {/*  <Link to="/profile" className="btn">Update Profile</Link>*/}
+                {/*  <button onClick={handleLogout} className="btn logout">Logout</button>*/}
+                {/*</div>*/}
+              </>
+          ) : (
+              <p>No user data found</p>
+          )}
+        </div>
+      </>
   );
 }
+
+const DeleteConfirmModal = ({ open, onCancel, onConfirm }) => {
+  if (!open) return null;
+
+  return (
+      <div
+          style={{
+            position: 'fixed',      // key to stay on top
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent backdrop
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,          // make sure it’s above other elements
+          }}
+      >
+        <div
+            style={{
+              background: 'white',
+              padding: '1.5rem',
+              borderRadius: '8px',
+              width: '400px',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            }}
+        >
+          <h3>Confirm Delete</h3>
+          <p>Are you sure you want to delete this data? This action cannot be undone.</p>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' , marginTop:"30px"}}>
+            <button onClick={onCancel}>Cancel</button>
+
+            <button
+                onClick={onConfirm}
+                className="btn logout">Delete</button>
+          </div>
+        </div>
+      </div>
+  );
+};
+
 
 // Profile Component
 function Profile() {

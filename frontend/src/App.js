@@ -17,7 +17,6 @@ const api = {
   },
   
   login: async (credentials) => {
-    console.log(credentials)
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -161,10 +160,10 @@ function Login() {
     e.preventDefault();
     try {
       const result = await api.login(formData);
-      
-      if (result.token) {
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
+
+      if (result.code = '111') {
+        localStorage.setItem('token', result.data.uuid);
+        localStorage.setItem('user', JSON.stringify(result.data));
         navigate('/dashboard');
       } else {
         setMessage(result.message || 'Login failed');
@@ -222,13 +221,14 @@ function Dashboard() {
         }
         
         const parsedUser = JSON.parse(userData);
+        console.log(parsedUser)
         setUser(parsedUser);
         
         // Fetch user count
         const result = await api.getUserCount(token);
         
-        if (result.count !== undefined) {
-          setUserCount(result.count);
+        if (result.data !== undefined) {
+          setUserCount(result.data);
         } else {
           setError('Could not fetch user count');
         }
@@ -280,9 +280,9 @@ function Dashboard() {
       {user ? (
         <>
           <div className="user-info">
-            <p><strong>Welcome, {user.username}!</strong></p>
-            <p>Email: {user.email}</p>
-            {user.name && <p>Full Name: {user.name}</p>}
+            <p><strong>Welcome, {user.name}!</strong></p>
+            {/*<p>Email: {user.email}</p>*/}
+            {/*{user.name && <p>Full Name: {user.name}</p>}*/}
             {user.rank && <p>Rank: {user.rank}</p>}
             {user.role && <p>Role: {user.role}</p>}
           </div>

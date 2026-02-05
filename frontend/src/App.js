@@ -280,9 +280,9 @@ function Profile() {
           const result = await api.getProfile(token);
           if (result.code == 111) {
             setProfile({
-              name: result.name || '',
-              rank: result.rank || '',
-              role: result.role || ''
+              name: result.data.name || '',
+              rank: result.data.rank || '',
+              role: result.data.role || ''
             });
           }
         }
@@ -301,10 +301,12 @@ function Profile() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
+      profile.uuid = token
+      console.log("profile",profile)
       
       const result = await api.updateProfile(token, profile);
       
-      if (result.message === 'Profile updated successfully') {
+      if (result.code == 111) {
         setMessage('Profile updated successfully!');
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
@@ -313,7 +315,7 @@ function Profile() {
         user.role = profile.role;
         localStorage.setItem('user', JSON.stringify(user));
       } else {
-        setMessage(result.message || 'Update failed');
+        setMessage('Update failed');
       }
     } catch (error) {
       setMessage('Error: ' + error.message);

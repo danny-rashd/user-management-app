@@ -81,8 +81,10 @@ function Register() {
     e.preventDefault();
     try {
       const result = await api.register(formData);
-      
-      if (result.message === 'User registered successfully') {
+      console.log(result)
+      console.log(result.code)
+      if (result.code == 111) {
+        console.log('masuk')
         setMessage('Registration successful! Redirecting to login...');
         setTimeout(() => {
           navigate('/login');
@@ -105,13 +107,6 @@ function Register() {
           placeholder="Username"
           value={formData.username}
           onChange={(e) => setFormData({...formData, username: e.target.value})}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
           required
         />
         <input
@@ -161,7 +156,9 @@ function Login() {
     try {
       const result = await api.login(formData);
 
-      if (result.code = '111') {
+      console.log(result.code)
+      if (result.code == 111) {
+        console.log('masuk')
         localStorage.setItem('token', result.data.uuid);
         localStorage.setItem('user', JSON.stringify(result.data));
         navigate('/dashboard');
@@ -281,7 +278,6 @@ function Dashboard() {
         <>
           <div className="user-info">
             <p><strong>Welcome, {user.name}!</strong></p>
-            {/*<p>Email: {user.email}</p>*/}
             {/*{user.name && <p>Full Name: {user.name}</p>}*/}
             {user.rank && <p>Rank: {user.rank}</p>}
             {user.role && <p>Role: {user.role}</p>}
@@ -299,7 +295,6 @@ function Dashboard() {
                 <thead>
                   <tr>
                     <th>Username</th>
-                    <th>Email</th>
                     <th>Full Name</th>
                     <th>Rank</th>
                     <th>Role</th>
@@ -310,7 +305,6 @@ function Dashboard() {
                   {usersList.map((u) => (
                     <tr key={u.id}>
                       <td>{u.username}</td>
-                      <td>{u.email}</td>
                       <td>{u.name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
@@ -340,7 +334,6 @@ function Dashboard() {
 function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    email: '',
     name: '',
     rank: '',
     role: ''
@@ -354,9 +347,8 @@ function Profile() {
         const token = localStorage.getItem('token');
         if (token) {
           const result = await api.getProfile(token);
-          if (result.email) {
+          if (result.data) {
             setProfile({
-              email: result.email,
               name: result.name || '',
               rank: result.rank || '',
               role: result.role || ''
@@ -385,7 +377,6 @@ function Profile() {
         setMessage('Profile updated successfully!');
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
-        user.email = profile.email;
         user.name = profile.name;
         user.rank = profile.rank;
         user.role = profile.role;
@@ -411,13 +402,6 @@ function Profile() {
     <div className="profile-container">
       <h2>Update Profile</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={profile.email}
-          onChange={(e) => setProfile({...profile, email: e.target.value})}
-          required
-        />
         <input
           type="text"
           placeholder="Full Name"

@@ -58,6 +58,16 @@ const api = {
     });
     const data = await response.json();
     return data;
+  },
+
+  deleteUser: async (id) => {
+    const response = await fetch(`${API_URL}/user/delete_user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uuid: id })
+    });
+    const data = await response.json();
+    return data;
   }
 };
 

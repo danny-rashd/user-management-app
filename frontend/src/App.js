@@ -205,6 +205,18 @@ function Dashboard() {
     );
   }
 
+  const handleDelete = async (id) => {
+    try {
+      const result = await api.deleteUser(id);
+      if (result.code == 111) {
+        setUsersList(usersList.filter((u) => u.uuid !== id));
+      }
+    } catch (error) {
+      console.error('Delete user error:', error);
+    }
+  };
+
+
   return (
     <div className="dashboard-container">
       <div style={{display:"flex", marginBottom: "40px", justifyContent:"space-between"}}>
@@ -241,13 +253,13 @@ function Dashboard() {
                 </thead>
                 <tbody>
                   {usersList.map((u) => (
-                    <tr key={u.uuid}>
+                    <tr key={u.uuuuid}>
                       <td>{u.name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
                       <td>{new Date(u.date_created).toLocaleDateString()}</td>
                       <td style={{ display: 'flex', gap: '10px' }}>
-                        <button className="btn logout">Delete</button>
+                        <button onClick={() => handleDelete(u.uuid)} className="btn logout">Delete</button>
 
                         <Link to={'/profile?id=' + u.uuid} className="btn">
                           Edit
@@ -258,8 +270,12 @@ function Dashboard() {
                   ))}
                 </tbody>
               </table>
-            ) : (
+            ) : usersList.length === 0 ?(
+              <p>No users found</p>
+            ) : loading ? (
               <p>Loading users...</p>
+            ) : (
+              <p>Error loading users</p>
             )}
           </div>
 

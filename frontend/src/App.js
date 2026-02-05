@@ -207,7 +207,12 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2>Dashboard</h2>
+      <div style={{display:"flex", marginBottom: "40px", justifyContent:"space-between"}}>
+        <div></div>
+        <h2 style={{marginBottom: "0"}}>Dashboard</h2>
+
+        <button onClick={handleLogout} className="btn logout">Logout</button>
+      </div>
       {user ? (
         <>
           <div className="user-info">
@@ -258,10 +263,10 @@ function Dashboard() {
             )}
           </div>
 
-          <div className="actions">
-            <Link to="/profile" className="btn">Update Profile</Link>
-            <button onClick={handleLogout} className="btn logout">Logout</button>
-          </div>
+          {/*<div className="actions">*/}
+          {/*  <Link to="/profile" className="btn">Update Profile</Link>*/}
+          {/*  <button onClick={handleLogout} className="btn logout">Logout</button>*/}
+          {/*</div>*/}
         </>
       ) : (
         <p>No user data found</p>

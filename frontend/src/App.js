@@ -236,14 +236,18 @@ function Dashboard() {
                 </thead>
                 <tbody>
                   {usersList.map((u) => (
-                    <tr key={u.id}>
+                    <tr key={u.uuid}>
                       <td>{u.name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
                       <td>{new Date(u.date_created).toLocaleDateString()}</td>
                       <td style={{ display: 'flex', gap: '10px' }}>
                         <button className="btn logout">Delete</button>
-                        <button className="btn logout">Edit</button>
+
+                        <Link to={'/profile?id=' + u.uuid} className="btn">
+                          Edit
+                        </Link>
+
                       </td>  
                     </tr>
                   ))}
@@ -280,7 +284,9 @@ function Profile() {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('id');
+
         if (token) {
           const result = await api.getProfile(token);
           if (result.code == 111) {
@@ -305,11 +311,11 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('id');
       profile.uuid = token
-      console.log("profile",profile)
-      
-      const result = await api.updateProfile(token, profile);
+
+      const result = await api.updateProfile(profile);
       
       if (result.code == 111) {
         setMessage('Profile updated successfully!');

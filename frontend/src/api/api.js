@@ -32,7 +32,7 @@ const api = {
     return data;
   },
   
-  updateProfile: async (token, profileData) => {
+  updateProfile: async (profileData) => {
     const response = await fetch(`${API_URL}/user/update_user`, {
       method: 'POST',
       headers: {

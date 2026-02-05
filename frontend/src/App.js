@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } f
 import './App.css';
 
 // API helper functions - PORT 5001
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'http://192.168.0.151:8080';
 
 const api = {
   register: async (userData) => {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_URL}/user/register_user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -17,7 +17,8 @@ const api = {
   },
   
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/login`, {
+    console.log(credentials)
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -27,7 +28,7 @@ const api = {
   },
   
   getProfile: async (token) => {
-    const response = await fetch(`${API_URL}/profile`, {
+    const response = await fetch(`${API_URL}/user/get_profile`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -35,7 +36,7 @@ const api = {
   },
   
   updateProfile: async (token, profileData) => {
-    const response = await fetch(`${API_URL}/profile`, {
+    const response = await fetch(`${API_URL}/user/update_user`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ const api = {
   },
   
   getUserCount: async (token) => {
-    const response = await fetch(`${API_URL}/users/count`, {
+    const response = await fetch(`${API_URL}/user/get_user_count`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -56,7 +57,7 @@ const api = {
   },
   
   getUsersList: async (token) => {
-    const response = await fetch(`${API_URL}/users`, {
+    const response = await fetch(`${API_URL}/user/user_list`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -68,10 +69,10 @@ const api = {
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    uuid: '',
     username: '',
-    email: '',
     password: '',
-    full_name: '',
+    name: '',
     rank: '',
     role: ''
   });
@@ -124,8 +125,8 @@ function Register() {
         <input
           type="text"
           placeholder="Full Name (optional)"
-          value={formData.full_name}
-          onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+          value={formData.name}
+          onChange={(e) => setFormData({...formData, name: e.target.value})}
         />
         <input
           type="text"
@@ -281,7 +282,7 @@ function Dashboard() {
           <div className="user-info">
             <p><strong>Welcome, {user.username}!</strong></p>
             <p>Email: {user.email}</p>
-            {user.full_name && <p>Full Name: {user.full_name}</p>}
+            {user.name && <p>Full Name: {user.name}</p>}
             {user.rank && <p>Rank: {user.rank}</p>}
             {user.role && <p>Role: {user.role}</p>}
           </div>
@@ -310,7 +311,7 @@ function Dashboard() {
                     <tr key={u.id}>
                       <td>{u.username}</td>
                       <td>{u.email}</td>
-                      <td>{u.full_name || '-'}</td>
+                      <td>{u.name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
                       <td>{new Date(u.created_at).toLocaleDateString()}</td>
@@ -340,7 +341,7 @@ function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
     email: '',
-    full_name: '',
+    name: '',
     rank: '',
     role: ''
   });
@@ -356,7 +357,7 @@ function Profile() {
           if (result.email) {
             setProfile({
               email: result.email,
-              full_name: result.full_name || '',
+              name: result.name || '',
               rank: result.rank || '',
               role: result.role || ''
             });
@@ -385,7 +386,7 @@ function Profile() {
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
         user.email = profile.email;
-        user.full_name = profile.full_name;
+        user.name = profile.name;
         user.rank = profile.rank;
         user.role = profile.role;
         localStorage.setItem('user', JSON.stringify(user));
@@ -420,8 +421,8 @@ function Profile() {
         <input
           type="text"
           placeholder="Full Name"
-          value={profile.full_name}
-          onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+          value={profile.name}
+          onChange={(e) => setProfile({...profile, name: e.target.value})}
         />
         <input
           type="text"

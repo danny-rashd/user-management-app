@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } f
 import './App.css';
 
 // API helper functions - PORT 5001
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'http://localhost:8080';
 
 const api = {
   register: async (userData) => {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_URL}/user/register_user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -17,7 +17,7 @@ const api = {
   },
   
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_URL}/register_user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -68,12 +68,11 @@ const api = {
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    full_name: '',
+    name: '',
     rank: '',
-    role: ''
+    role: '',
+    username: '',
+    password: '',
   });
   const [message, setMessage] = useState('');
 
@@ -82,7 +81,7 @@ function Register() {
     try {
       const result = await api.register(formData);
       
-      if (result.message === 'User registered successfully') {
+      if (result.description === 'User registered successfully') {
         setMessage('Registration successful! Redirecting to login...');
         setTimeout(() => {
           navigate('/login');
@@ -108,13 +107,6 @@ function Register() {
           required
         />
         <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
-          required
-        />
-        <input
           type="password"
           placeholder="Password"
           value={formData.password}
@@ -123,19 +115,19 @@ function Register() {
         />
         <input
           type="text"
-          placeholder="Full Name (optional)"
-          value={formData.full_name}
-          onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+          placeholder="Name"
+          value={formData.name}
+          onChange={(e) => setFormData({...formData, name: e.target.value})}
         />
         <input
           type="text"
-          placeholder="Rank (optional)"
+          placeholder="Rank"
           value={formData.rank}
           onChange={(e) => setFormData({...formData, rank: e.target.value})}
         />
         <input
           type="text"
-          placeholder="Role (optional)"
+          placeholder="Role"
           value={formData.role}
           onChange={(e) => setFormData({...formData, role: e.target.value})}
         />

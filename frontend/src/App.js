@@ -231,6 +231,7 @@ function Dashboard() {
                     <th>Rank</th>
                     <th>Role</th>
                     <th>Joined</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -240,6 +241,10 @@ function Dashboard() {
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
                       <td>{new Date(u.date_created).toLocaleDateString()}</td>
+                      <td style={{ display: 'flex', gap: '10px' }}>
+                        <button className="btn logout">Delete</button>
+                        <button className="btn logout">Edit</button>
+                      </td>  
                     </tr>
                   ))}
                 </tbody>

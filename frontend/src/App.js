@@ -211,9 +211,7 @@ function Dashboard() {
       {user ? (
         <>
           <div className="user-info">
-            <p><strong>Welcome, {user.username}!</strong></p>
-            <p>Email: {user.email}</p>
-            {user.full_name && <p>Full Name: {user.full_name}</p>}
+            <p><strong>Welcome, {user.name}!</strong></p>
             {user.rank && <p>Rank: {user.rank}</p>}
             {user.role && <p>Role: {user.role}</p>}
           </div>

@@ -1,79 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import './App.css';
+import api from './api/api';
 
-// API helper functions - PORT 5001
-const API_URL = 'http://192.168.0.151:8080';
-
-const api = {
-  register: async (userData) => {
-    const response = await fetch(`${API_URL}/user/register_user`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    const data = await response.json();
-    return data;
-  },
-  
-  login: async (credentials) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    });
-    const data = await response.json();
-    return data;
-  },
-  
-  getProfile: async (token) => {
-    const response = await fetch(`${API_URL}/user/get_profile`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    return data;
-  },
-  
-  updateProfile: async (token, profileData) => {
-    const response = await fetch(`${API_URL}/user/update_user`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(profileData)
-    });
-    const data = await response.json();
-    return data;
-  },
-  
-  getUserCount: async (token) => {
-    const response = await fetch(`${API_URL}/user/get_user_count`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    return data;
-  },
-  
-  getUsersList: async (token) => {
-    const response = await fetch(`${API_URL}/user/user_list`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    return data;
-  }
-};
 
 // Register Component
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    uuid: '',
-    username: '',
-    password: '',
     name: '',
     rank: '',
-    role: ''
+    role: '',
+    username: '',
+    password: '',
   });
   const [message, setMessage] = useState('');
 
@@ -81,10 +20,8 @@ function Register() {
     e.preventDefault();
     try {
       const result = await api.register(formData);
-      console.log(result)
-      console.log(result.code)
-      if (result.code == 111) {
-        console.log('masuk')
+      
+      if (result.description === 'User registered successfully') {
         setMessage('Registration successful! Redirecting to login...');
         setTimeout(() => {
           navigate('/login');
@@ -118,19 +55,19 @@ function Register() {
         />
         <input
           type="text"
-          placeholder="Full Name (optional)"
+          placeholder="Name"
           value={formData.name}
           onChange={(e) => setFormData({...formData, name: e.target.value})}
         />
         <input
           type="text"
-          placeholder="Rank (optional)"
+          placeholder="Rank"
           value={formData.rank}
           onChange={(e) => setFormData({...formData, rank: e.target.value})}
         />
         <input
           type="text"
-          placeholder="Role (optional)"
+          placeholder="Role"
           value={formData.role}
           onChange={(e) => setFormData({...formData, role: e.target.value})}
         />
@@ -155,12 +92,10 @@ function Login() {
     e.preventDefault();
     try {
       const result = await api.login(formData);
-
-      console.log(result.code)
-      if (result.code == 111) {
-        console.log('masuk')
-        localStorage.setItem('token', result.data.uuid);
-        localStorage.setItem('user', JSON.stringify(result.data));
+      
+      if (result.token) {
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('user', JSON.stringify(result.user));
         navigate('/dashboard');
       } else {
         setMessage(result.message || 'Login failed');
@@ -218,14 +153,13 @@ function Dashboard() {
         }
         
         const parsedUser = JSON.parse(userData);
-        console.log(parsedUser)
         setUser(parsedUser);
         
         // Fetch user count
         const result = await api.getUserCount(token);
         
-        if (result.data !== undefined) {
-          setUserCount(result.data);
+        if (result.count !== undefined) {
+          setUserCount(result.count);
         } else {
           setError('Could not fetch user count');
         }
@@ -277,8 +211,9 @@ function Dashboard() {
       {user ? (
         <>
           <div className="user-info">
-            <p><strong>Welcome, {user.name}!</strong></p>
-            {/*{user.name && <p>Full Name: {user.name}</p>}*/}
+            <p><strong>Welcome, {user.username}!</strong></p>
+            <p>Email: {user.email}</p>
+            {user.full_name && <p>Full Name: {user.full_name}</p>}
             {user.rank && <p>Rank: {user.rank}</p>}
             {user.role && <p>Role: {user.role}</p>}
           </div>
@@ -295,6 +230,7 @@ function Dashboard() {
                 <thead>
                   <tr>
                     <th>Username</th>
+                    <th>Email</th>
                     <th>Full Name</th>
                     <th>Rank</th>
                     <th>Role</th>
@@ -305,7 +241,8 @@ function Dashboard() {
                   {usersList.map((u) => (
                     <tr key={u.id}>
                       <td>{u.username}</td>
-                      <td>{u.name || '-'}</td>
+                      <td>{u.email}</td>
+                      <td>{u.full_name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
                       <td>{new Date(u.created_at).toLocaleDateString()}</td>
@@ -334,7 +271,8 @@ function Dashboard() {
 function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    name: '',
+    email: '',
+    full_name: '',
     rank: '',
     role: ''
   });
@@ -347,9 +285,10 @@ function Profile() {
         const token = localStorage.getItem('token');
         if (token) {
           const result = await api.getProfile(token);
-          if (result.data) {
+          if (result.email) {
             setProfile({
-              name: result.name || '',
+              email: result.email,
+              full_name: result.full_name || '',
               rank: result.rank || '',
               role: result.role || ''
             });
@@ -377,7 +316,8 @@ function Profile() {
         setMessage('Profile updated successfully!');
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
-        user.name = profile.name;
+        user.email = profile.email;
+        user.full_name = profile.full_name;
         user.rank = profile.rank;
         user.role = profile.role;
         localStorage.setItem('user', JSON.stringify(user));
@@ -403,10 +343,17 @@ function Profile() {
       <h2>Update Profile</h2>
       <form onSubmit={handleSubmit}>
         <input
+          type="email"
+          placeholder="Email"
+          value={profile.email}
+          onChange={(e) => setProfile({...profile, email: e.target.value})}
+          required
+        />
+        <input
           type="text"
           placeholder="Full Name"
-          value={profile.name}
-          onChange={(e) => setProfile({...profile, name: e.target.value})}
+          value={profile.full_name}
+          onChange={(e) => setProfile({...profile, full_name: e.target.value})}
         />
         <input
           type="text"

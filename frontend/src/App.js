@@ -166,9 +166,9 @@ function Dashboard() {
         
         // Fetch users list
         const usersResult = await api.getUsersList(token);
-        
-        if (usersResult.users) {
-          setUsersList(usersResult.users);
+        console.log(usersResult)
+        if (usersResult.code == 111) {
+          setUsersList(usersResult.data);
         }
       } catch (err) {
         console.error('Dashboard error:', err);
@@ -227,8 +227,6 @@ function Dashboard() {
               <table>
                 <thead>
                   <tr>
-                    <th>Username</th>
-                    <th>Email</th>
                     <th>Full Name</th>
                     <th>Rank</th>
                     <th>Role</th>
@@ -238,12 +236,10 @@ function Dashboard() {
                 <tbody>
                   {usersList.map((u) => (
                     <tr key={u.id}>
-                      <td>{u.username}</td>
-                      <td>{u.email}</td>
-                      <td>{u.full_name || '-'}</td>
+                      <td>{u.name || '-'}</td>
                       <td>{u.rank || '-'}</td>
                       <td>{u.role || '-'}</td>
-                      <td>{new Date(u.created_at).toLocaleDateString()}</td>
+                      <td>{new Date(u.date_created).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -269,8 +265,7 @@ function Dashboard() {
 function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    email: '',
-    full_name: '',
+    name: '',
     rank: '',
     role: ''
   });
@@ -283,10 +278,9 @@ function Profile() {
         const token = localStorage.getItem('token');
         if (token) {
           const result = await api.getProfile(token);
-          if (result.email) {
+          if (result.code == 111) {
             setProfile({
-              email: result.email,
-              full_name: result.full_name || '',
+              name: result.name || '',
               rank: result.rank || '',
               role: result.role || ''
             });
@@ -314,8 +308,7 @@ function Profile() {
         setMessage('Profile updated successfully!');
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
-        user.email = profile.email;
-        user.full_name = profile.full_name;
+        user.name = profile.name;
         user.rank = profile.rank;
         user.role = profile.role;
         localStorage.setItem('user', JSON.stringify(user));
@@ -341,17 +334,10 @@ function Profile() {
       <h2>Update Profile</h2>
       <form onSubmit={handleSubmit}>
         <input
-          type="email"
-          placeholder="Email"
-          value={profile.email}
-          onChange={(e) => setProfile({...profile, email: e.target.value})}
-          required
-        />
-        <input
           type="text"
           placeholder="Full Name"
-          value={profile.full_name}
-          onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+          value={profile.name}
+          onChange={(e) => setProfile({...profile, name: e.target.value})}
         />
         <input
           type="text"

@@ -204,9 +204,13 @@ function Register() {
                 </div>
 
                 <button type="submit">Register</button>
+                <button type={'button'} className={'btn btn-primary'} onClick={() =>{
+
+                    navigate('/dashboard');
+                }}>Cancel</button>
             </form>
             {message && <p className={`message ${messageType === 'error' ? 'error' : ''}`}>{message}</p>}
-            <p>Already have an account? <Link to="/login">Login here</Link></p>
+            {/*<p>Already have an account? <Link to="/dashboard">Login here</Link></p>*/}
         </div>
     );
 }
@@ -259,7 +263,7 @@ function Login() {
         <button type="submit">Login</button>
       </form>
       {message && <p className="message error">{message}</p>}
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+      <p>Don't have an account? Please contact admin.</p>
     </div>
   );
 }
@@ -404,6 +408,13 @@ function Dashboard() {
                   <p className="count">{userCount}</p>
                 </div>
 
+                  <div className="users-list" style={{textAlign:"right"}}>
+
+                      <button onClick={() =>{
+
+                          navigate('/register');
+                      }} className="btn logout">Register User</button>
+                  </div>
                   <div className="users-list">
                       {usersList.length > 0 ? (
                           <table>

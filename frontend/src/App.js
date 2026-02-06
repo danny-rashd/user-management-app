@@ -512,14 +512,41 @@ const DeleteConfirmModal = ({ open, onCancel, onConfirm }) => {
 function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
     name: '',
     rank: '',
-    role: ''
+    role: []
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [rankOptions, setRankOptions] = useState([]);
+  const [roleOptions, setRoleOptions] = useState([]);
 
   useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const ranksData = await api.getRanks();
+        const formattedRanks = ranksData.map(rank => ({
+          value: rank.uuid,
+          label: rank.name,
+          code: rank.code
+        }));
+        setRankOptions(formattedRanks);
+
+        const rolesData = await api.getRoles();
+        const formattedRoles = rolesData.map(role => ({
+          value: role.uuid,
+          label: role.name,
+          code: role.code
+        }));
+        setRoleOptions(formattedRoles);
+      } catch (error) {
+        console.error('Error fetching options:', error);
+      }
+    };
+    fetchOptions();
     const loadProfile = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
@@ -529,6 +556,7 @@ function Profile() {
           const result = await api.getProfile(token);
           if (result.code == 111) {
             setProfile({
+              username: result.data.username || '',
               name: result.data.name || '',
               rank: result.data.rank || '',
               role: result.data.role || ''
@@ -584,24 +612,79 @@ function Profile() {
     <div className="profile-container">
       <h2>Update Profile</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={profile.name}
-          onChange={(e) => setProfile({...profile, name: e.target.value})}
-        />
-        <input
-          type="text"
-          placeholder="Rank"
-          value={profile.rank}
-          onChange={(e) => setProfile({...profile, rank: e.target.value})}
-        />
-        <input
-          type="text"
-          placeholder="Role"
-          value={profile.role}
-          onChange={(e) => setProfile({...profile, role: e.target.value})}
-        />
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            value={profile.username}
+            onChange={(e) => setProfile((prev) => ({ ...prev, username: e.target.value }))}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            value={profile.password}
+            onChange={(e) => setProfile((prev) => ({ ...prev, password: e.target.value }))}
+          // required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            value={profile.confirmPassword}
+            onChange={(e) => setProfile((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+          // required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Name"
+            value={profile.name}
+            onChange={(e) => setProfile((prev) => ({ ...prev, name: e.target.value }))}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="rank">Rank</label>
+          <Select
+            id="rank"
+            options={rankOptions}
+            value={profile.rank}
+            onChange={(selected) => setProfile((prev) => ({ ...prev, rank: selected }))}
+            placeholder="Select rank..."
+            isClearable
+            isSearchable
+          />
+        </div>
+
+        <div>
+          <label htmlFor="role">Role</label>
+          <Select
+            id="role"
+            options={roleOptions}
+            value={profile.role}
+            onChange={(selected) => setProfile((prev) => ({ ...prev, role: selected }))}
+            placeholder="Select roles..."
+            isMulti
+            isClearable
+            isSearchable
+          />
+        </div>
         <button type="submit">Update Profile</button>
       </form>
       {message && <p className="message">{message}</p>}

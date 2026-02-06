@@ -756,7 +756,7 @@ function Profile() {
             isSearchable
           />
         </div>
-        <button type="submit">Update Profile</button>
+        <button type="submit" style={{ marginTop: '10px' }}>Update Profile</button>
       </form>
       {message && <p className={`message ${messageType}`}>{message}</p>}
       <Link to="/dashboard" className="back-link">Back to Dashboard</Link>

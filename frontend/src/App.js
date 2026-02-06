@@ -380,29 +380,22 @@ function Dashboard() {
                       </div>
 
                       <div className="user-metadata">
-                          {/*{*/}
-                          {/*    console.log(user)*/}
-                          {/*}*/}
-                          {/*{user.rank && (*/}
-                          {/*    <div className="info-item">*/}
-                          {/*        <span className="info-label">Rank</span>*/}
-                          {/*        /!*<span className="info-value">{user.rank}</span>*!/*/}
-                          {/*    </div>*/}
-                          {/*)}*/}
-                          {/*{user.role && (*/}
-                          {/*    <div className="info-item">*/}
-                          {/*        <span className="info-label">Role</span>*/}
-                          {/*        <div className="info-value roles-container">*/}
-                          {/*            /!*{Array.isArray(user.role) ? (*!/*/}
-                          {/*            /!*    user.role.map((role, index) => (*!/*/}
-                          {/*            /!*        <span key={index} className="role-pill">{role}</span>*!/*/}
-                          {/*            /!*    ))*!/*/}
-                          {/*            /!*) : (*!/*/}
-                          {/*            /!*    <span className="role-pill">{user.role}</span>*!/*/}
-                          {/*            /!*)}*!/*/}
-                          {/*        </div>*/}
-                          {/*    </div>*/}
-                          {/*)}*/}
+                          {user.rank && (
+                              <div className="info-item">
+                                  <span className="info-label">Rank</span>
+                                  <span className="info-value">{user.rank.name}</span>
+                              </div>
+                          )}
+                          {user.roles && user.roles.length > 0 && (
+                              <div className="info-item">
+                                  <span className="info-label">Role</span>
+                                  <div className="info-value roles-container">
+                                      {user.roles.map((role) => (
+                                          <span key={role.uuid} className="role-pill">{role.name}</span>
+                                      ))}
+                                  </div>
+                              </div>
+                          )}
                       </div>
                   </div>
 

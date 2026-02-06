@@ -13,7 +13,7 @@ const api = {
   },
   
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_URL}/auth/admin_login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)

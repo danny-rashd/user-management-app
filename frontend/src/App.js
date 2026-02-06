@@ -267,7 +267,16 @@ function Dashboard() {
                               <td>{u.name || '-'}</td>
                               <td>{u.rank || '-'}</td>
                               <td>{u.role || '-'}</td>
-                              <td>{new Date(u.date_created).toLocaleDateString()}</td>
+                              <td>
+                                {new Date(u.date_created).toLocaleString('en-MY', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </td>
+
                               <td style={{ display: 'flex', gap: '10px' }}>
                                 <button onClick={() => setSelectedDeleteUUID(u.uuid)} className="btn logout">Delete</button>
 

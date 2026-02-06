@@ -94,6 +94,10 @@ button:active,
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
+.register {
+    background: linear-gradient(135deg, #43D975 0%, #30D9BA 100%);
+}
+
 .message {
     margin-top: 15px;
     padding: 10px;
@@ -243,6 +247,7 @@ a:hover {
     color: #667eea;
     box-shadow: none;
 }
+
 @media (max-width: 600px) {
     .user-info {
         padding: 20px;
@@ -272,7 +277,7 @@ a:hover {
     padding: 30px;
     border-radius: 10px;
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
 }
 
@@ -280,7 +285,9 @@ a:hover {
     color: white;
     margin-bottom: 15px;
 }
-
+.register-button {
+    margin-bottom: 30px;
+}
 .count {
     font-size: 48px;
     font-weight: bold;

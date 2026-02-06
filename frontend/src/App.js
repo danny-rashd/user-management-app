@@ -211,7 +211,7 @@ function Register() {
                     />
                 </div>
 
-                <button type="submit" style={{ marginTop: '10px' }}>Register</button>
+                <button type="submit" className={'register'} style={{ marginTop: '10px' }}>Register</button>
                 <button type={'button'} className={'btn btn-primary'} onClick={() =>{
 
                     navigate('/dashboard');
@@ -416,12 +416,12 @@ function Dashboard() {
                   <p className="count">{userCount}</p>
                 </div>
 
-                  <div className="users-list" style={{textAlign:"right"}}>
+                  <div style={{textAlign:"right"}}>
 
                       <button onClick={() =>{
 
                           navigate('/register');
-                      }} className="btn logout">Register User</button>
+                      }} className="register register-button">Register User</button>
                   </div>
                   <div className="users-list">
                       {usersList.length > 0 ? (

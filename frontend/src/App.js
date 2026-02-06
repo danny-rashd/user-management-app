@@ -211,13 +211,15 @@ function Register() {
                     />
                 </div>
 
-                <button type="submit" className={'register'} style={{ marginTop: '10px' }}>Register</button>
-                <button type={'button'} className={'btn btn-primary'} onClick={() =>{
+                <button type="submit" style={{ marginTop: '10px' }}>Register</button>
+                {/*<button type={'button'} className={'btn btn-primary'} onClick={() =>{*/}
 
-                    navigate('/dashboard');
-                }}>Cancel</button>
+                {/*    navigate('/dashboard');*/}
+                {/*}}>Cancel</button>*/}
             </form>
             {message && <p className={`message ${messageType === 'error' ? 'error' : ''}`}>{message}</p>}
+
+            <Link to="/dashboard" className="back-link">Back to Dashboard</Link>
             {/*<p>Already have an account? <Link to="/dashboard">Login here</Link></p>*/}
         </div>
     );

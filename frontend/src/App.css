@@ -218,7 +218,7 @@ a:hover {
 .role-pill {
     display: inline-block;
     padding: 6px 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ea9700 0%, #f1b74efc 100%);
     color: white;
     border-radius: 20px;
     font-size: 13px;
@@ -243,24 +243,6 @@ a:hover {
     color: #667eea;
     box-shadow: none;
 }
-
-/* Style 3: Different colors for variety */
-.role-pill:nth-child(1) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.role-pill:nth-child(2) {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.role-pill:nth-child(3) {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.role-pill:nth-child(4) {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
 @media (max-width: 600px) {
     .user-info {
         padding: 20px;

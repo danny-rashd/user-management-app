@@ -375,7 +375,7 @@ function Dashboard() {
                           </div>
                           <div className="user-details">
                               <h3>{user.name}</h3>
-                              <p className="username">@{user.username}</p>
+                              <p className="username">{user.username}</p>
                           </div>
                       </div>
 
@@ -383,26 +383,26 @@ function Dashboard() {
                           {/*{*/}
                           {/*    console.log(user)*/}
                           {/*}*/}
-                          {user.rank && (
-                              <div className="info-item">
-                                  <span className="info-label">Rank</span>
-                                  {/*<span className="info-value">{user.rank}</span>*/}
-                              </div>
-                          )}
-                          {user.role && (
-                              <div className="info-item">
-                                  <span className="info-label">Role</span>
-                                  <div className="info-value roles-container">
-                                      {/*{Array.isArray(user.role) ? (*/}
-                                      {/*    user.role.map((role, index) => (*/}
-                                      {/*        <span key={index} className="role-pill">{role}</span>*/}
-                                      {/*    ))*/}
-                                      {/*) : (*/}
-                                      {/*    <span className="role-pill">{user.role}</span>*/}
-                                      {/*)}*/}
-                                  </div>
-                              </div>
-                          )}
+                          {/*{user.rank && (*/}
+                          {/*    <div className="info-item">*/}
+                          {/*        <span className="info-label">Rank</span>*/}
+                          {/*        /!*<span className="info-value">{user.rank}</span>*!/*/}
+                          {/*    </div>*/}
+                          {/*)}*/}
+                          {/*{user.role && (*/}
+                          {/*    <div className="info-item">*/}
+                          {/*        <span className="info-label">Role</span>*/}
+                          {/*        <div className="info-value roles-container">*/}
+                          {/*            /!*{Array.isArray(user.role) ? (*!/*/}
+                          {/*            /!*    user.role.map((role, index) => (*!/*/}
+                          {/*            /!*        <span key={index} className="role-pill">{role}</span>*!/*/}
+                          {/*            /!*    ))*!/*/}
+                          {/*            /!*) : (*!/*/}
+                          {/*            /!*    <span className="role-pill">{user.role}</span>*!/*/}
+                          {/*            /!*)}*!/*/}
+                          {/*        </div>*/}
+                          {/*    </div>*/}
+                          {/*)}*/}
                       </div>
                   </div>
 
@@ -427,8 +427,8 @@ function Dashboard() {
                               {usersList.map((u) => (
                                   <tr key={u.uuid}>
                                       <td>{u.name || '-'}</td>
-                                      <td>{u.rank || '-'}</td>
-                                      <td>{u.role || '-'}</td>
+                                      {/*<td>{u.rank || '-'}</td>*/}
+                                      {/*<td>{u.role || '-'}</td>*/}
                                       <td>
                                           {new Date(u.date_created).toLocaleString('en-MY', {
                                               year: 'numeric',
@@ -558,8 +558,8 @@ function Profile() {
             setProfile({
               username: result.data.username || '',
               name: result.data.name || '',
-              rank: result.data.rank || '',
-              role: result.data.role || ''
+              // rank: result.data.rank || '',
+              // role: result.data.role || ''
             });
           }
         }
@@ -588,8 +588,8 @@ function Profile() {
         // Update localStorage user data
         const user = JSON.parse(localStorage.getItem('user'));
         user.name = profile.name;
-        user.rank = profile.rank;
-        user.role = profile.role;
+        // user.rank = profile.rank;
+        // user.role = profile.role;
         localStorage.setItem('user', JSON.stringify(user));
       } else {
         setMessage('Update failed');

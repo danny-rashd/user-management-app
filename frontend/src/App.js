@@ -203,7 +203,7 @@ function Register() {
                     />
                 </div>
 
-                <button type="submit">Register</button>
+                <button type="submit" style={{ marginTop: '10px' }}>Register</button>
                 <button type={'button'} className={'btn btn-primary'} onClick={() =>{
 
                     navigate('/dashboard');
@@ -431,14 +431,11 @@ function Dashboard() {
                               {usersList.map((u) => (
                                   <tr key={u.uuid}>
                                       <td>{u.name || '-'}</td>
-                                      {
-                                          console.log(u)
-                                      }
                                       <td>{u.rank?.name || '-'}</td>
                                       <td>
-                                          {user.roles && user.roles.length > 0 && (
+                                          {u.roles && u.roles.length > 0 && (
                                                   <div className="info-value roles-container">
-                                                      {user.roles.map((role) => (
+                                                      {u.roles.map((role) => (
                                                           <span key={role.uuid} className="role-pill">{role.name}</span>
                                                       ))}
                                                   </div>

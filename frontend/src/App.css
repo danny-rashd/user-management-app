@@ -127,16 +127,161 @@ a:hover {
 }
 
 .user-info {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 25px;
+    border-radius: 12px;
     margin-bottom: 25px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.user-info p {
-    margin: 8px 0;
-    text-align: left;
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-details h3 {
+    margin: 0 0 5px 0;
     color: #333;
+    font-size: 22px;
+    text-align: left;
+}
+
+.username {
+    margin: 0;
+    color: #667eea;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.user-metadata {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.roles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.role-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+    white-space: nowrap;
+}
+
+/* Alternative styles - choose what you prefer */
+
+/* Style 1: Outlined pills */
+.role-pill.outlined {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    box-shadow: none;
+}
+
+/* Style 2: Subtle pills */
+.role-pill.subtle {
+    background: #e8eaf6;
+    color: #667eea;
+    box-shadow: none;
+}
+
+/* Style 3: Different colors for variety */
+.role-pill:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.role-pill:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.role-pill:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.role-pill:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+@media (max-width: 600px) {
+    .user-info {
+        padding: 20px;
+    }
+
+    .user-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .user-details h3 {
+        text-align: center;
+    }
+
+    .username {
+        text-align: center;
+    }
+
+    .user-metadata {
+        grid-template-columns: 1fr;
+    }
 }
 
 .user-count-card {
@@ -163,7 +308,6 @@ a:hover {
 
 .users-list {
     background: white;
-    padding: 25px;
     border-radius: 10px;
     margin-bottom: 25px;
     border: 2px solid #f0f0f0;
@@ -180,22 +324,33 @@ a:hover {
 }
 
 .users-list th {
-    background: #f8f9fa;
-    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 14px 12px;
     text-align: left;
     font-weight: 600;
-    border-bottom: 2px solid #e0e0e0;
-    color: #555;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.users-list th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.users-list th:last-child {
+    border-top-right-radius: 8px;
 }
 
 .users-list td {
-    padding: 12px;
+    padding: 14px 12px;
     border-bottom: 1px solid #e0e0e0;
     color: #333;
 }
 
 .users-list tr:hover {
     background: #f8f9fa;
+    transition: background 0.2s ease;
 }
 
 .users-list tr:last-child td {
@@ -223,19 +378,6 @@ a:hover {
 
     h2 {
         font-size: 24px;
-    }
-
-    .users-list {
-        overflow-x: auto;
-    }
-
-    .users-list table {
-        font-size: 14px;
-    }
-
-    .users-list th,
-    .users-list td {
-        padding: 8px;
     }
 }
 

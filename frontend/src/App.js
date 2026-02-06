@@ -2,81 +2,206 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import './App.css';
 import api from './api/api';
-
+import Select from 'react-select';
 
 // Register Component
 function Register() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: '',
-    rank: '',
-    role: '',
-    username: '',
-    password: '',
-  });
-  const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        confirmPassword: '',
+        name: '',
+        rank: null,      // Single select
+        role: []         // Multi select
+    });
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('success'); // 'success' or 'error'
+    const [rankOptions, setRankOptions] = useState([]);
+    const [roleOptions, setRoleOptions] = useState([]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const result = await api.register(formData);
-      
-      if (result.description === 'User registered successfully') {
-        setMessage('Registration successful! Redirecting to login...');
-        setTimeout(() => {
-          navigate('/login');
-        }, 1500);
-      } else {
-        setMessage(result.message || 'Registration failed');
-      }
-    } catch (error) {
-      setMessage('Error: ' + error.message);
-      console.error('Registration error:', error);
-    }
-  };
+    useEffect(() => {
+        // Temporary mock data for ranks
+        const mockRanks = [
+            { uuid: '1a2b3c4d', code: 'LT', name: 'Lieutenant' },
+            { uuid: '2b3c4d5e', code: 'CPT', name: 'Captain' },
+            { uuid: '3c4d5e6f', code: 'MAJ', name: 'Major' },
+            { uuid: '4d5e6f7g', code: 'LTC', name: 'Lieutenant Colonel' },
+            { uuid: '5e6f7g8h', code: 'COL', name: 'Colonel' }
+        ];
 
-  return (
-    <div className="auth-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={formData.username}
-          onChange={(e) => setFormData({...formData, username: e.target.value})}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) => setFormData({...formData, password: e.target.value})}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => setFormData({...formData, name: e.target.value})}
-        />
-        <input
-          type="text"
-          placeholder="Rank"
-          value={formData.rank}
-          onChange={(e) => setFormData({...formData, rank: e.target.value})}
-        />
-        <input
-          type="text"
-          placeholder="Role"
-          value={formData.role}
-          onChange={(e) => setFormData({...formData, role: e.target.value})}
-        />
-        <button type="submit">Register</button>
-      </form>
-      {message && <p className="message">{message}</p>}
-      <p>Already have an account? <Link to="/login">Login here</Link></p>
-    </div>
-  );
+        // Temporary mock data for roles
+        const mockRoles = [
+            { uuid: 'a1b2c3d4', code: 'ADM', name: 'Administrator' },
+            { uuid: 'b2c3d4e5', code: 'MGR', name: 'Manager' },
+            { uuid: 'c3d4e5f6', code: 'USR', name: 'User' },
+            { uuid: 'd4e5f6g7', code: 'AUD', name: 'Auditor' },
+            { uuid: 'e5f6g7h8', code: 'DEV', name: 'Developer' }
+        ];
+
+        // Format ranks
+        const formattedRanks = mockRanks.map(rank => ({
+            value: rank.uuid,
+            label: rank.name,
+            code: rank.code
+        }));
+        setRankOptions(formattedRanks);
+
+        // Format roles
+        const formattedRoles = mockRoles.map(role => ({
+            value: role.uuid,
+            label: role.name,
+            code: role.code
+        }));
+        setRoleOptions(formattedRoles);
+
+        // When API is ready, replace with:
+        // const fetchOptions = async () => {
+        //   try {
+        //     const ranksData = await api.getRanks();
+        //     const formattedRanks = ranksData.map(rank => ({
+        //       value: rank.uuid,
+        //       label: rank.name,
+        //       code: rank.code
+        //     }));
+        //     setRankOptions(formattedRanks);
+        //
+        //     const rolesData = await api.getRoles();
+        //     const formattedRoles = rolesData.map(role => ({
+        //       value: role.uuid,
+        //       label: role.name,
+        //       code: role.code
+        //     }));
+        //     setRoleOptions(formattedRoles);
+        //   } catch (error) {
+        //     console.error('Error fetching options:', error);
+        //   }
+        // };
+        // fetchOptions();
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (formData.password !== formData.confirmPassword) {
+            setMessage('Passwords do not match');
+            setMessageType('error');
+            return;
+        }
+
+        try {
+            const { confirmPassword, ...registrationData } = formData;
+
+            // Transform the data for API
+            const apiData = {
+                ...registrationData,
+                rank: registrationData.rank?.value || null,  // Send UUID
+                role: registrationData.role?.map(r => r.value) || []  // Send array of UUIDs
+            };
+
+            const result = await api.register(apiData);
+
+            if (result.description === 'User registered successfully') {
+                setMessage('Registration successful! Redirecting to login...');
+                setMessageType('success');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 1500);
+            } else {
+                setMessage(result.message || 'Registration failed');
+                setMessageType('error');
+            }
+        } catch (error) {
+            setMessage('Error: ' + error.message);
+            setMessageType('error');
+            console.error('Registration error:', error);
+        }
+    };
+
+    return (
+        <div className="auth-container">
+            <h2>Register</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        type="text"
+                        placeholder="Username"
+                        value={formData.username}
+                        onChange={(e) => setFormData({...formData, username: e.target.value})}
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="password">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="name">Name</label>
+                    <input
+                        id="name"
+                        type="text"
+                        placeholder="Name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="rank">Rank</label>
+                    <Select
+                        id="rank"
+                        options={rankOptions}
+                        value={formData.rank}
+                        onChange={(selected) => setFormData({...formData, rank: selected})}
+                        placeholder="Select rank..."
+                        isClearable
+                        isSearchable
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="role">Role</label>
+                    <Select
+                        id="role"
+                        options={roleOptions}
+                        value={formData.role}
+                        onChange={(selected) => setFormData({...formData, role: selected})}
+                        placeholder="Select roles..."
+                        isMulti
+                        isClearable
+                        isSearchable
+                    />
+                </div>
+
+                <button type="submit">Register</button>
+            </form>
+            {message && <p className={`message ${messageType === 'error' ? 'error' : ''}`}>{message}</p>}
+            <p>Already have an account? <Link to="/login">Login here</Link></p>
+        </div>
+    );
 }
 
 // Login Component
@@ -92,7 +217,7 @@ function Login() {
     e.preventDefault();
     try {
       const result = await api.login(formData);
-      
+
       if (result.code == 111) {
         localStorage.setItem('token', result.data.uuid);
         localStorage.setItem('user', JSON.stringify(result.data));
@@ -147,24 +272,24 @@ function Dashboard() {
       try {
         const token = localStorage.getItem('token');
         const userData = localStorage.getItem('user');
-        
+
         if (!token || !userData) {
           navigate('/login');
           return;
         }
-        
+
         const parsedUser = JSON.parse(userData);
         setUser(parsedUser);
-        
+
         // Fetch user count
         const result = await api.getUserCount(token);
-        
+
         if (result.code == 111) {
           setUserCount(result.data);
         } else {
           setError('Could not fetch user count');
         }
-        
+
         // Fetch users list
         const usersResult = await api.getUsersList(token);
         console.log(usersResult)
@@ -178,7 +303,7 @@ function Dashboard() {
         setLoading(false);
       }
     };
-    
+
     loadDashboard();
   }, [navigate]);
 
@@ -388,7 +513,7 @@ function Profile() {
         setLoading(false);
       }
     };
-    
+
     loadProfile();
   }, []);
 
@@ -400,7 +525,7 @@ function Profile() {
       profile.uuid = token
 
       const result = await api.updateProfile(profile);
-      
+
       if (result.code == 111) {
         setMessage('Profile updated successfully!');
         // Update localStorage user data
@@ -471,21 +596,21 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/profile" 
+          <Route
+            path="/profile"
             element={
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </div>

@@ -646,6 +646,7 @@ function Profile() {
       if (result.code == 111) {
         setMessage('Profile updated successfully!');
         setMessageType('')
+        setProfile((prev) => ({...prev, password: '', confirmPassword: ''}))
       } else {
         setMessage('Update failed');
         setMessageType('error')

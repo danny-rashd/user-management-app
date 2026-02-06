@@ -21,41 +21,6 @@ function Register() {
     const [roleOptions, setRoleOptions] = useState([]);
 
     useEffect(() => {
-        // // Temporary mock data for ranks
-        // const mockRanks = [
-        //     { uuid: '1a2b3c4d', code: 'LT', name: 'Lieutenant' },
-        //     { uuid: '2b3c4d5e', code: 'CPT', name: 'Captain' },
-        //     { uuid: '3c4d5e6f', code: 'MAJ', name: 'Major' },
-        //     { uuid: '4d5e6f7g', code: 'LTC', name: 'Lieutenant Colonel' },
-        //     { uuid: '5e6f7g8h', code: 'COL', name: 'Colonel' }
-        // ];
-        //
-        // // Temporary mock data for roles
-        // const mockRoles = [
-        //     { uuid: 'a1b2c3d4', code: 'ADM', name: 'Administrator' },
-        //     { uuid: 'b2c3d4e5', code: 'MGR', name: 'Manager' },
-        //     { uuid: 'c3d4e5f6', code: 'USR', name: 'User' },
-        //     { uuid: 'd4e5f6g7', code: 'AUD', name: 'Auditor' },
-        //     { uuid: 'e5f6g7h8', code: 'DEV', name: 'Developer' }
-        // ];
-        //
-        // // Format ranks
-        // const formattedRanks = mockRanks.map(rank => ({
-        //     value: rank.uuid,
-        //     label: rank.name,
-        //     code: rank.code
-        // }));
-        // setRankOptions(formattedRanks);
-        //
-        // // Format roles
-        // const formattedRoles = mockRoles.map(role => ({
-        //     value: role.uuid,
-        //     label: role.name,
-        //     code: role.code
-        // }));
-        // setRoleOptions(formattedRoles);
-
-        // When API is ready, replace with:
         const fetchOptions = async () => {
           try {
             const ranksData = await api.getRanks();
@@ -83,8 +48,51 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate all required fields
+        if (!formData.username.trim()) {
+            setMessage('Username is required');
+            setMessageType('error');
+            return;
+        }
+
+        if (!formData.password) {
+            setMessage('Password is required');
+            setMessageType('error');
+            return;
+        }
+
+        if (!formData.confirmPassword) {
+            setMessage('Please confirm your password');
+            setMessageType('error');
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             setMessage('Passwords do not match');
+            setMessageType('error');
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            setMessage('Password must be at least 6 characters long');
+            setMessageType('error');
+            return;
+        }
+
+        if (!formData.name.trim()) {
+            setMessage('Name is required');
+            setMessageType('error');
+            return;
+        }
+
+        if (!formData.rank) {
+            setMessage('Please select a rank');
+            setMessageType('error');
+            return;
+        }
+
+        if (!formData.role || formData.role.length === 0) {
+            setMessage('Please select at least one role');
             setMessageType('error');
             return;
         }
@@ -117,7 +125,6 @@ function Register() {
             console.error('Registration error:', error);
         }
     };
-
     return (
         <div className="auth-container">
             <h2>Register</h2>
@@ -362,71 +369,91 @@ function Dashboard() {
           </div>
           {user ? (
               <>
-                <div className="user-info">
-                  <p><strong>Welcome, {user.name}!</strong></p>
-                  {user.rank && <p>Rank: {user.rank}</p>}
-                  {user.role && <p>Role: {user.role}</p>}
-                </div>
+                  <div className="user-info">
+                      <div className="user-header">
+                          <div className="user-avatar">
+                              {user.name?.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="user-details">
+                              <h3>{user.name}</h3>
+                              <p className="username">@{user.username}</p>
+                          </div>
+                      </div>
+
+                      <div className="user-metadata">
+                          {user.rank && (
+                              <div className="info-item">
+                                  <span className="info-label">Rank</span>
+                                  <span className="info-value">{user.rank}</span>
+                              </div>
+                          )}
+                          {user.role && (
+                              <div className="info-item">
+                                  <span className="info-label">Role</span>
+                                  <div className="info-value roles-container">
+                                      {Array.isArray(user.role) ? (
+                                          user.role.map((role, index) => (
+                                              <span key={index} className="role-pill">{role}</span>
+                                          ))
+                                      ) : (
+                                          <span className="role-pill">{user.role}</span>
+                                      )}
+                                  </div>
+                              </div>
+                          )}
+                      </div>
+                  </div>
 
                 <div className="user-count-card">
                   <h3>Total Registered Users</h3>
                   <p className="count">{userCount}</p>
                 </div>
 
-                <div className="users-list">
-                  <h3>Registered Users</h3>
-                  {usersList.length > 0 ? (
-                      <table>
-                        <thead>
-                        <tr>
-                          <th>Full Name</th>
-                          <th>Rank</th>
-                          <th>Role</th>
-                          <th>Joined</th>
-                          <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {usersList.map((u) => (
-                            <tr key={u.uuuuid}>
-                              <td>{u.name || '-'}</td>
-                              <td>{u.rank || '-'}</td>
-                              <td>{u.role || '-'}</td>
-                              <td>
-                                {new Date(u.date_created).toLocaleString('en-MY', {
-                                  year: 'numeric',
-                                  month: '2-digit',
-                                  day: '2-digit',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                })}
-                              </td>
-
-                              <td style={{ display: 'flex', gap: '10px' }}>
-                                <button onClick={() => setSelectedDeleteUUID(u.uuid)} className="btn logout">Delete</button>
-
-                                <Link to={'/profile?id=' + u.uuid} className="btn">
-                                  Edit
-                                </Link>
-
-                              </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                      </table>
-                  ) : usersList.length === 0 ?(
-                      <p>No users found</p>
-                  ) : loading ? (
-                      <p>Loading users...</p>
-                  ) : (
-                      <p>Error loading users</p>
-                  )}
-                </div>
-
-                {/*<div className="actions">*/}
-                {/*  <Link to="/profile" className="btn">Update Profile</Link>*/}
-                {/*  <button onClick={handleLogout} className="btn logout">Logout</button>*/}
-                {/*</div>*/}
+                  <div className="users-list">
+                      {usersList.length > 0 ? (
+                          <table>
+                              <thead>
+                              <tr>
+                                  <th>Full Name</th>
+                                  <th>Rank</th>
+                                  <th>Role</th>
+                                  <th>Joined</th>
+                                  <th>Actions</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {usersList.map((u) => (
+                                  <tr key={u.uuid}>
+                                      <td>{u.name || '-'}</td>
+                                      <td>{u.rank || '-'}</td>
+                                      <td>{u.role || '-'}</td>
+                                      <td>
+                                          {new Date(u.date_created).toLocaleString('en-MY', {
+                                              year: 'numeric',
+                                              month: '2-digit',
+                                              day: '2-digit',
+                                              hour: '2-digit',
+                                              minute: '2-digit',
+                                          })}
+                                      </td>
+                                      <td style={{ display: 'flex', gap: '10px' }}>
+                                          <button onClick={() => setSelectedDeleteUUID(u.uuid)} className="btn logout">Delete</button>
+                                          <Link to={'/profile?id=' + u.uuid} className="btn">
+                                              Edit
+                                          </Link>
+                                      </td>
+                                  </tr>
+                              ))}
+                              </tbody>
+                          </table>
+                      ) : usersList.length === 0 ?(
+                          <p>No users found</p>
+                      ) : loading ? (
+                          <p>Loading users...</p>
+                      ) : (
+                          <p>Error loading users</p>
+                      )}
+                  </div>
               </>
           ) : (
               <p>No user data found</p>

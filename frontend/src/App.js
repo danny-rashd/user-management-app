@@ -203,10 +203,14 @@ function Register() {
                     />
                 </div>
 
-                <button type="submit">Register</button>
+                <button type="submit" style={{ marginTop: '10px' }}>Register</button>
+                <button type={'button'} className={'btn btn-primary'} onClick={() =>{
+
+                    navigate('/dashboard');
+                }}>Cancel</button>
             </form>
             {message && <p className={`message ${messageType === 'error' ? 'error' : ''}`}>{message}</p>}
-            <p>Already have an account? <Link to="/login">Login here</Link></p>
+            {/*<p>Already have an account? <Link to="/dashboard">Login here</Link></p>*/}
         </div>
     );
 }
@@ -259,7 +263,7 @@ function Login() {
         <button type="submit">Login</button>
       </form>
       {message && <p className="message error">{message}</p>}
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+      <p>Don't have an account? Please contact admin.</p>
     </div>
   );
 }
@@ -380,29 +384,22 @@ function Dashboard() {
                       </div>
 
                       <div className="user-metadata">
-                          {/*{*/}
-                          {/*    console.log(user)*/}
-                          {/*}*/}
-                          {/*{user.rank && (*/}
-                          {/*    <div className="info-item">*/}
-                          {/*        <span className="info-label">Rank</span>*/}
-                          {/*        /!*<span className="info-value">{user.rank}</span>*!/*/}
-                          {/*    </div>*/}
-                          {/*)}*/}
-                          {/*{user.role && (*/}
-                          {/*    <div className="info-item">*/}
-                          {/*        <span className="info-label">Role</span>*/}
-                          {/*        <div className="info-value roles-container">*/}
-                          {/*            /!*{Array.isArray(user.role) ? (*!/*/}
-                          {/*            /!*    user.role.map((role, index) => (*!/*/}
-                          {/*            /!*        <span key={index} className="role-pill">{role}</span>*!/*/}
-                          {/*            /!*    ))*!/*/}
-                          {/*            /!*) : (*!/*/}
-                          {/*            /!*    <span className="role-pill">{user.role}</span>*!/*/}
-                          {/*            /!*)}*!/*/}
-                          {/*        </div>*/}
-                          {/*    </div>*/}
-                          {/*)}*/}
+                          {user.rank && (
+                              <div className="info-item">
+                                  <span className="info-label">Rank</span>
+                                  <span className="info-value">{user.rank.name}</span>
+                              </div>
+                          )}
+                          {user.roles && user.roles.length > 0 && (
+                              <div className="info-item">
+                                  <span className="info-label">Role</span>
+                                  <div className="info-value roles-container">
+                                      {user.roles.map((role) => (
+                                          <span key={role.uuid} className="role-pill">{role.name}</span>
+                                      ))}
+                                  </div>
+                              </div>
+                          )}
                       </div>
                   </div>
 
@@ -411,6 +408,13 @@ function Dashboard() {
                   <p className="count">{userCount}</p>
                 </div>
 
+                  <div className="users-list" style={{textAlign:"right"}}>
+
+                      <button onClick={() =>{
+
+                          navigate('/register');
+                      }} className="btn logout">Register User</button>
+                  </div>
                   <div className="users-list">
                       {usersList.length > 0 ? (
                           <table>
@@ -427,8 +431,16 @@ function Dashboard() {
                               {usersList.map((u) => (
                                   <tr key={u.uuid}>
                                       <td>{u.name || '-'}</td>
-                                      {/*<td>{u.rank || '-'}</td>*/}
-                                      {/*<td>{u.role || '-'}</td>*/}
+                                      <td>{u.rank?.name || '-'}</td>
+                                      <td>
+                                          {u.roles && u.roles.length > 0 && (
+                                                  <div className="info-value roles-container">
+                                                      {u.roles.map((role) => (
+                                                          <span key={role.uuid} className="role-pill">{role.name}</span>
+                                                      ))}
+                                                  </div>
+                                          )}
+                                      </td>
                                       <td>
                                           {new Date(u.date_created).toLocaleString('en-MY', {
                                               year: 'numeric',

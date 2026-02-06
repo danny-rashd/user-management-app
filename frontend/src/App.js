@@ -226,9 +226,9 @@ function Login() {
       const result = await api.login(formData);
 
       if (result.code == 111) {
-        localStorage.setItem('token', result.data.uuid);
-        localStorage.setItem('user', JSON.stringify(result.data));
-        navigate('/dashboard');
+          localStorage.setItem('token', result.data.uuid);
+          localStorage.setItem('user', JSON.stringify(result.data));
+          navigate('/dashboard');
       } else {
         setMessage(result.message || 'Login failed');
       }
@@ -299,7 +299,6 @@ function Dashboard() {
 
         // Fetch users list
         const usersResult = await api.getUsersList(token);
-        console.log(usersResult)
         if (usersResult.code == 111) {
           setUsersList(usersResult.data);
         }
@@ -381,23 +380,26 @@ function Dashboard() {
                       </div>
 
                       <div className="user-metadata">
+                          {/*{*/}
+                          {/*    console.log(user)*/}
+                          {/*}*/}
                           {user.rank && (
                               <div className="info-item">
                                   <span className="info-label">Rank</span>
-                                  <span className="info-value">{user.rank}</span>
+                                  {/*<span className="info-value">{user.rank}</span>*/}
                               </div>
                           )}
                           {user.role && (
                               <div className="info-item">
                                   <span className="info-label">Role</span>
                                   <div className="info-value roles-container">
-                                      {Array.isArray(user.role) ? (
-                                          user.role.map((role, index) => (
-                                              <span key={index} className="role-pill">{role}</span>
-                                          ))
-                                      ) : (
-                                          <span className="role-pill">{user.role}</span>
-                                      )}
+                                      {/*{Array.isArray(user.role) ? (*/}
+                                      {/*    user.role.map((role, index) => (*/}
+                                      {/*        <span key={index} className="role-pill">{role}</span>*/}
+                                      {/*    ))*/}
+                                      {/*) : (*/}
+                                      {/*    <span className="role-pill">{user.role}</span>*/}
+                                      {/*)}*/}
                                   </div>
                               </div>
                           )}

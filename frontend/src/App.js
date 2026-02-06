@@ -118,11 +118,9 @@ function Register() {
             const result = await api.register(apiData);
 
             if (result.description === 'User registered successfully') {
-                setMessage('Registration successful! Redirecting to login...');
+                // setMessage('Registration successful! Redirecting to dashboard...');
                 setMessageType('success');
-                setTimeout(() => {
-                    navigate('/login');
-                }, 1500);
+                navigate('/dashboard');
             } else {
                 setMessage(result.message || 'Registration failed');
                 setMessageType('error');

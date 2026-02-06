@@ -575,12 +575,13 @@ function Profile() {
         if (token) {
           const result = await api.getProfile(token);
           if (result.code == 111) {
-            setProfile({
+            setProfile((prev) => ({
+              ...prev,
               username: result.data.username || '',
               name: result.data.name || '',
-              // rank: result.data.rank || '',
-              // role: result.data.role || ''
-            });
+              rank: result.data.rank ? {value: result.data.rank.uuid, label: result.data.rank.name, code: result.data.rank.code} : null,
+              role: result.data.roles.map(role => ({ value: role.uuid, label: role.name, code: role.code }))
+            }));
           }
         }
       } catch (error) {
@@ -652,7 +653,6 @@ function Profile() {
             placeholder="Password"
             value={profile.password}
             onChange={(e) => setProfile((prev) => ({ ...prev, password: e.target.value }))}
-          // required
           />
         </div>
 
@@ -664,7 +664,7 @@ function Profile() {
             placeholder="Confirm Password"
             value={profile.confirmPassword}
             onChange={(e) => setProfile((prev) => ({ ...prev, confirmPassword: e.target.value }))}
-          // required
+            required={profile.password.length !== 0}
           />
         </div>
 

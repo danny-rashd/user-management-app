@@ -1,5 +1,10 @@
 // API helper functions - PORT 5001
-const API_URL = 'http://localhost:8080';
+let API_URL = 'http://localhost:8080';
+if (window.location.hostname !== "localhost") {
+     API_URL = window.location.protocol + "//" + window.location.hostname + "/um";
+
+}
+
 
 const api = {
     register: async (userData) => {

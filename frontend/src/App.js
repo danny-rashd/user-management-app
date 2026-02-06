@@ -21,63 +21,63 @@ function Register() {
     const [roleOptions, setRoleOptions] = useState([]);
 
     useEffect(() => {
-        // Temporary mock data for ranks
-        const mockRanks = [
-            { uuid: '1a2b3c4d', code: 'LT', name: 'Lieutenant' },
-            { uuid: '2b3c4d5e', code: 'CPT', name: 'Captain' },
-            { uuid: '3c4d5e6f', code: 'MAJ', name: 'Major' },
-            { uuid: '4d5e6f7g', code: 'LTC', name: 'Lieutenant Colonel' },
-            { uuid: '5e6f7g8h', code: 'COL', name: 'Colonel' }
-        ];
-
-        // Temporary mock data for roles
-        const mockRoles = [
-            { uuid: 'a1b2c3d4', code: 'ADM', name: 'Administrator' },
-            { uuid: 'b2c3d4e5', code: 'MGR', name: 'Manager' },
-            { uuid: 'c3d4e5f6', code: 'USR', name: 'User' },
-            { uuid: 'd4e5f6g7', code: 'AUD', name: 'Auditor' },
-            { uuid: 'e5f6g7h8', code: 'DEV', name: 'Developer' }
-        ];
-
-        // Format ranks
-        const formattedRanks = mockRanks.map(rank => ({
-            value: rank.uuid,
-            label: rank.name,
-            code: rank.code
-        }));
-        setRankOptions(formattedRanks);
-
-        // Format roles
-        const formattedRoles = mockRoles.map(role => ({
-            value: role.uuid,
-            label: role.name,
-            code: role.code
-        }));
-        setRoleOptions(formattedRoles);
+        // // Temporary mock data for ranks
+        // const mockRanks = [
+        //     { uuid: '1a2b3c4d', code: 'LT', name: 'Lieutenant' },
+        //     { uuid: '2b3c4d5e', code: 'CPT', name: 'Captain' },
+        //     { uuid: '3c4d5e6f', code: 'MAJ', name: 'Major' },
+        //     { uuid: '4d5e6f7g', code: 'LTC', name: 'Lieutenant Colonel' },
+        //     { uuid: '5e6f7g8h', code: 'COL', name: 'Colonel' }
+        // ];
+        //
+        // // Temporary mock data for roles
+        // const mockRoles = [
+        //     { uuid: 'a1b2c3d4', code: 'ADM', name: 'Administrator' },
+        //     { uuid: 'b2c3d4e5', code: 'MGR', name: 'Manager' },
+        //     { uuid: 'c3d4e5f6', code: 'USR', name: 'User' },
+        //     { uuid: 'd4e5f6g7', code: 'AUD', name: 'Auditor' },
+        //     { uuid: 'e5f6g7h8', code: 'DEV', name: 'Developer' }
+        // ];
+        //
+        // // Format ranks
+        // const formattedRanks = mockRanks.map(rank => ({
+        //     value: rank.uuid,
+        //     label: rank.name,
+        //     code: rank.code
+        // }));
+        // setRankOptions(formattedRanks);
+        //
+        // // Format roles
+        // const formattedRoles = mockRoles.map(role => ({
+        //     value: role.uuid,
+        //     label: role.name,
+        //     code: role.code
+        // }));
+        // setRoleOptions(formattedRoles);
 
         // When API is ready, replace with:
-        // const fetchOptions = async () => {
-        //   try {
-        //     const ranksData = await api.getRanks();
-        //     const formattedRanks = ranksData.map(rank => ({
-        //       value: rank.uuid,
-        //       label: rank.name,
-        //       code: rank.code
-        //     }));
-        //     setRankOptions(formattedRanks);
-        //
-        //     const rolesData = await api.getRoles();
-        //     const formattedRoles = rolesData.map(role => ({
-        //       value: role.uuid,
-        //       label: role.name,
-        //       code: role.code
-        //     }));
-        //     setRoleOptions(formattedRoles);
-        //   } catch (error) {
-        //     console.error('Error fetching options:', error);
-        //   }
-        // };
-        // fetchOptions();
+        const fetchOptions = async () => {
+          try {
+            const ranksData = await api.getRanks();
+            const formattedRanks = ranksData.map(rank => ({
+              value: rank.uuid,
+              label: rank.name,
+              code: rank.code
+            }));
+            setRankOptions(formattedRanks);
+
+            const rolesData = await api.getRoles();
+            const formattedRoles = rolesData.map(role => ({
+              value: role.uuid,
+              label: role.name,
+              code: role.code
+            }));
+            setRoleOptions(formattedRoles);
+          } catch (error) {
+            console.error('Error fetching options:', error);
+          }
+        };
+        fetchOptions();
     }, []);
 
     const handleSubmit = async (e) => {

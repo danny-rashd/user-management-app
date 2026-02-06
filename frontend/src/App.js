@@ -118,11 +118,9 @@ function Register() {
             const result = await api.register(apiData);
 
             if (result.description === 'User registered successfully') {
-                setMessage('Registration successful! Redirecting to login...');
+                // setMessage('Registration successful! Redirecting to dashboard...');
                 setMessageType('success');
-                setTimeout(() => {
-                    navigate('/login');
-                }, 1500);
+                navigate('/dashboard');
             } else {
                 setMessage(result.message || 'Registration failed');
                 setMessageType('error');
@@ -548,6 +546,13 @@ function Profile() {
   const [messageType, setMessageType] = useState(''); // 'success' or 'error'
 
   useEffect(() => {
+    const userData = localStorage.getItem('user');
+    const parsedUser = JSON.parse(userData);
+    // Assuming `user` may be null or undefined
+    if (!parsedUser || !Array.isArray(parsedUser.roles) || !parsedUser.roles.some(role => role.code === "ADMIN")) {
+        // User does not exist or has no ADMIN role
+        navigate("/login"); // Replace with your desired path
+    }
     const fetchOptions = async () => {
       try {
         const ranksData = await api.getRanks();
@@ -649,6 +654,13 @@ function Profile() {
         setMessage('Profile updated successfully!');
         setMessageType('')
         setProfile((prev) => ({...prev, password: '', confirmPassword: ''}))
+        // Update localStorage user data
+        const userProfile = await api.getProfile(token);
+        if (userProfile.code === '111') {
+          if (userProfile.data.uuid === localStorage.getItem('token')) {
+            localStorage.setItem('user', JSON.stringify(userProfile.data));
+          }
+        }
       } else {
         setMessage('Update failed');
         setMessageType('error')
@@ -680,6 +692,7 @@ function Profile() {
             value={profile.username}
             onChange={(e) => setProfile((prev) => ({ ...prev, username: e.target.value }))}
             required
+            disabled
           />
         </div>
 
@@ -743,7 +756,7 @@ function Profile() {
             isSearchable
           />
         </div>
-        <button type="submit">Update Profile</button>
+        <button type="submit" style={{ marginTop: '10px' }}>Update Profile</button>
       </form>
       {message && <p className={`message ${messageType}`}>{message}</p>}
       <Link to="/dashboard" className="back-link">Back to Dashboard</Link>

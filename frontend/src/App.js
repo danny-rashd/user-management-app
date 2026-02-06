@@ -21,6 +21,14 @@ function Register() {
     const [roleOptions, setRoleOptions] = useState([]);
 
     useEffect(() => {
+        const userData = localStorage.getItem('user');
+        const parsedUser = JSON.parse(userData);
+        // Assuming `user` may be null or undefined
+        if (!parsedUser || !Array.isArray(parsedUser.roles) || !parsedUser.roles.some(role => role.code === "ADMIN")) {
+            // User does not exist or has no ADMIN role
+            navigate("/login"); // Replace with your desired path
+        }
+
         const fetchOptions = async () => {
           try {
             const ranksData = await api.getRanks();

@@ -420,8 +420,19 @@ function Dashboard() {
                               {usersList.map((u) => (
                                   <tr key={u.uuid}>
                                       <td>{u.name || '-'}</td>
-                                      {/*<td>{u.rank || '-'}</td>*/}
-                                      {/*<td>{u.role || '-'}</td>*/}
+                                      {
+                                          console.log(u)
+                                      }
+                                      <td>{u.rank?.name || '-'}</td>
+                                      <td>
+                                          {user.roles && user.roles.length > 0 && (
+                                                  <div className="info-value roles-container">
+                                                      {user.roles.map((role) => (
+                                                          <span key={role.uuid} className="role-pill">{role.name}</span>
+                                                      ))}
+                                                  </div>
+                                          )}
+                                      </td>
                                       <td>
                                           {new Date(u.date_created).toLocaleString('en-MY', {
                                               year: 'numeric',

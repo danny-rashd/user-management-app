@@ -535,6 +535,7 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [rankOptions, setRankOptions] = useState([]);
   const [roleOptions, setRoleOptions] = useState([]);
+  const [messageType, setMessageType] = useState(''); // 'success' or 'error'
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -589,6 +590,44 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+     // Validate all required fields
+        if (!profile.username.trim()) {
+            setMessage('Username is required');
+            setMessageType('error');
+            return;
+        }
+
+        if (profile.password !== profile.confirmPassword) {
+            setMessage('Passwords do not match');
+            setMessageType('error');
+            return;
+        }
+
+        if (profile.password && profile.password.length < 6) {
+            setMessage('Password must be at least 6 characters long');
+            setMessageType('error');
+            return;
+        }
+
+        if (!profile.name.trim()) {
+            setMessage('Name is required');
+            setMessageType('error');
+            return;
+        }
+
+        if (!profile.rank) {
+            setMessage('Please select a rank');
+            setMessageType('error');
+            return;
+        }
+
+        if (!profile.role || profile.role.length === 0) {
+            setMessage('Please select at least one role');
+            setMessageType('error');
+            return;
+        }
+
     try {
       const params = new URLSearchParams(window.location.search);
       const token = params.get('id');
@@ -598,14 +637,10 @@ function Profile() {
 
       if (result.code == 111) {
         setMessage('Profile updated successfully!');
-        // Update localStorage user data
-        const user = JSON.parse(localStorage.getItem('user'));
-        user.name = profile.name;
-        // user.rank = profile.rank;
-        // user.role = profile.role;
-        localStorage.setItem('user', JSON.stringify(user));
+        setMessageType('')
       } else {
         setMessage('Update failed');
+        setMessageType('error')
       }
     } catch (error) {
       setMessage('Error: ' + error.message);
@@ -699,7 +734,7 @@ function Profile() {
         </div>
         <button type="submit">Update Profile</button>
       </form>
-      {message && <p className="message">{message}</p>}
+      {message && <p className={`message ${messageType}`}>{message}</p>}
       <Link to="/dashboard" className="back-link">Back to Dashboard</Link>
     </div>
   );

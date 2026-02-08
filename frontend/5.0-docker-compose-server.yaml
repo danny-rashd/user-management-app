@@ -23,8 +23,8 @@ services:
     restart: always
     networks:
       - marlin_group
-    ports:
-      - "80:80"
+#    ports:
+#      - "80:80"
     logging:
       driver: "json-file"
       options:

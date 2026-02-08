@@ -1,7 +1,7 @@
 // API helper functions - PORT 5001
 let API_URL = 'http://localhost:8080';
 if (window.location.hostname !== "localhost") {
-     API_URL = window.location.protocol + "//" + window.location.hostname + "/um";
+     API_URL = window.location.protocol + "//" + window.location.hostname + "/fcs-um-be";
 
 }
 

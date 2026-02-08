@@ -1,0 +1,21 @@
+# Ignore all files matching docker-*
+docker-*
+venv*
+.idea
+.git
+**/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.db
+.env
+*.DS_Store
+
+*.idea
+
+node_modules
+src/www.zip
+package-lock.json
+# Ignore the setting folder

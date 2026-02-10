@@ -18,15 +18,13 @@ services:
         order: start-first
     volumes:
       ##FOR PRODUCTION
-      - /var/www/um/fe/frontend/build:/usr/share/nginx/html
-      ##FOR DEVELOPMENT
-      #   - ./build:/var/www/fe
-    stop_grace_period: 15s
+      - /var/www/um/fe/frontend/build:/var/www/fe
+    stop_grace_period: 5s
     restart: always
     networks:
       - marlin_group
-#    ports:
-#      - "80:80"
+    ports:
+      - 3005:80
     logging:
       driver: "json-file"
       options:

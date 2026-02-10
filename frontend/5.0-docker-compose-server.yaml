@@ -16,10 +16,12 @@ services:
         parallelism: 1
         delay: 10s
         order: start-first
-#    volumes:
-#      - ./build:/var/www/fe/fcs-um
-#      - /var/www/um/fe/frontend/build:/usr/share/nginx/html
-    stop_grace_period: 5s
+    volumes:
+      ##FOR PRODUCTION
+      - /var/www/um/fe/frontend/build:/usr/share/nginx/html
+      ##FOR DEVELOPMENT
+      #   - ./build:/var/www/fe
+    stop_grace_period: 15s
     restart: always
     networks:
       - marlin_group

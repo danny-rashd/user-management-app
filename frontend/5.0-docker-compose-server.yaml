@@ -16,9 +16,9 @@ services:
         parallelism: 1
         delay: 10s
         order: start-first
-    volumes:
-      ##FOR PRODUCTION
-      - /var/www/um/fe/frontend/build:/var/www/fe
+#    volumes:
+#      ##FOR PRODUCTION
+#      - /var/www/um/fe/frontend/build:/var/www/fe
     stop_grace_period: 5s
     restart: always
     networks:
